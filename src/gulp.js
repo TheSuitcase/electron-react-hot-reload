@@ -38,7 +38,6 @@ const replaceExtension = (filename, extension) => {
 export default function(){
 
   const buffer = function(file, enc, cb){
-    // console.log(file.base, Object.keys(file))
     if(!isJsx(file.path)){
       cb(null, file)
       return;
@@ -50,16 +49,12 @@ export default function(){
     file.path = addUnderscoreToFileName(file.path)
     const orginialFilename = path.basename(file.path)
     const newFileName = replaceExtension(orginialFilename, 'js')
-    // console.log('newFileName', file.path)
 
-    const v = new Vinyl({
+    this.push(new Vinyl({
       base: file.base,
       path: originalPath,
       contents: new Buffer(proxyFile(newFileName))
-    })
-
-    console.log(v.path)
-    this.push(v)
+    }))
 
     cb(null, file)
   }

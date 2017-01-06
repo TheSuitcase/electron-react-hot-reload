@@ -7,7 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function () {
 
   var buffer = function buffer(file, enc, cb) {
-    // console.log(file.base, Object.keys(file))
     if (!isJsx(file.path)) {
       cb(null, file);
       return;
@@ -19,16 +18,12 @@ exports.default = function () {
     file.path = addUnderscoreToFileName(file.path);
     var orginialFilename = _path2.default.basename(file.path);
     var newFileName = replaceExtension(orginialFilename, 'js');
-    // console.log('newFileName', file.path)
 
-    var v = new _vinyl2.default({
+    this.push(new _vinyl2.default({
       base: file.base,
       path: originalPath,
       contents: new Buffer(proxyFile(newFileName))
-    });
-
-    console.log(v.path);
-    this.push(v);
+    }));
 
     cb(null, file);
   };
