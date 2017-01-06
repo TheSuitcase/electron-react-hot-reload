@@ -53,7 +53,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // component.js (proxy)
 
 var proxyFile = function proxyFile(filename) {
-  return ['import { ReactProxy } from \'../../dist\'', 'import Component from \'./' + filename + '\'', 'export default new ReactProxy(Component, __dirname + \'/' + filename + '\')'].join('\n');
+  return ['import { ReactProxy } from \'electron-react-hot-reload\'', 'import Component from \'./' + filename + '\'', 'export default new ReactProxy(Component, __dirname + \'/' + filename + '\')'].join('\n');
 };
 
 var isJsx = function isJsx(filePath) {

@@ -1,6 +1,6 @@
 {
   "name": "electron-react-hot-reload",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Updates your React Components instantly while you do your magic",
   "main": "./dist/index.js",
   "scripts": {
