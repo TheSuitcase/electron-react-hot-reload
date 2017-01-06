@@ -1,5 +1,9 @@
+#### This is an beta version! Use at your own risk.
+---
+
 # Electron React Hot Reload
 > Develop your Electron React at lightning speed.
+
 
 ## Install
 `npm install thesuitcase/electron-react-hot-reload`
