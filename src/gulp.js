@@ -18,8 +18,7 @@ const isJsx = (filePath) => {
   return path.extname(filePath) === '.jsx'
 }
 
-const addUnderscoreToFileName = (file) => {
-  const { path } = file
+const addUnderscoreToFileName = (path) => {
   const slices = path.split('/')
   const filename = slices.pop()
 
@@ -38,7 +37,8 @@ const replaceExtension = (filename, extension) => {
 
 export default function(){
 
-  const buffer = function(file, enc, cb){    
+  const buffer = function(file, enc, cb){
+    // console.log(file.base, Object.keys(file))
     if(!isJsx(file.path)){
       cb(null, file)
       return;
@@ -47,14 +47,19 @@ export default function(){
     const originalPath = file.path;
 
     // Change file path from 'Component.jsx' to '_Component.jsx'
-    file.path = addUnderscoreToFileName(file, '_[filename].jsx')
+    file.path = addUnderscoreToFileName(file.path)
     const orginialFilename = path.basename(file.path)
-    const newFilename = replaceExtension(orginialFilename, 'js')
+    const newFileName = replaceExtension(orginialFilename, 'js')
+    // console.log('newFileName', file.path)
 
-    this.push(new Vinyl({
-      path: path.basename(originalPath),
-      contents: new Buffer(proxyFile(newFilename))
-    }))
+    const v = new Vinyl({
+      base: file.base,
+      path: originalPath,
+      contents: new Buffer(proxyFile(newFileName))
+    })
+
+    console.log(v.path)
+    this.push(v)
 
     cb(null, file)
   }

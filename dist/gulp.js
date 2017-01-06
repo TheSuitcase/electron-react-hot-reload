@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function () {
 
   var buffer = function buffer(file, enc, cb) {
+    // console.log(file.base, Object.keys(file))
     if (!isJsx(file.path)) {
       cb(null, file);
       return;
@@ -15,14 +16,19 @@ exports.default = function () {
     var originalPath = file.path;
 
     // Change file path from 'Component.jsx' to '_Component.jsx'
-    file.path = addUnderscoreToFileName(file, '_[filename].jsx');
+    file.path = addUnderscoreToFileName(file.path);
     var orginialFilename = _path2.default.basename(file.path);
-    var newFilename = replaceExtension(orginialFilename, 'js');
+    var newFileName = replaceExtension(orginialFilename, 'js');
+    // console.log('newFileName', file.path)
 
-    this.push(new _vinyl2.default({
-      path: _path2.default.basename(originalPath),
-      contents: new Buffer(proxyFile(newFilename))
-    }));
+    var v = new _vinyl2.default({
+      base: file.base,
+      path: originalPath,
+      contents: new Buffer(proxyFile(newFileName))
+    });
+
+    console.log(v.path);
+    this.push(v);
 
     cb(null, file);
   };
@@ -60,9 +66,7 @@ var isJsx = function isJsx(filePath) {
   return _path2.default.extname(filePath) === '.jsx';
 };
 
-var addUnderscoreToFileName = function addUnderscoreToFileName(file) {
-  var path = file.path;
-
+var addUnderscoreToFileName = function addUnderscoreToFileName(path) {
   var slices = path.split('/');
   var filename = slices.pop();
 

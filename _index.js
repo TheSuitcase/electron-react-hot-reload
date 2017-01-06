@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _electronReactHotReload = require('electron-react-hot-reload');
 
-var _App = require('./_App.js');
+var _index = require('./_index.js');
 
-var _App2 = _interopRequireDefault(_App);
+var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = new _electronReactHotReload.ReactProxy(_App2.default, __dirname + '/_App.js');
+exports.default = new _electronReactHotReload.ReactProxy(_index2.default, __dirname + '/_index.js');
