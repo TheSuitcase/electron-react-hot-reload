@@ -8,7 +8,7 @@ import Vinyl from 'vinyl'
 
 const proxyFile = (filename) => {
   return [
-    `import { ReactProxy } from '../../dist'`,
+    `import { ReactProxy } from 'electron-react-hot-reload'`,
     `import Component from './${filename}'`,
     `export default new ReactProxy(Component, __dirname + '/${filename}')`,
   ].join('\n')
