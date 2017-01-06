@@ -2,7 +2,7 @@
   "name": "electron-react-hot-reload",
   "version": "0.0.1",
   "description": "Updates your React Components instantly while you do your magic",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src --out-dir dist",
