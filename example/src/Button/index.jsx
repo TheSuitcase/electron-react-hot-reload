@@ -17,3 +17,14 @@ class Button extends Component{
 }
 
 export default Button
+
+export class SubButton extends Component{
+  render(){
+    return (
+      <div> SubButton 2 </div>
+    )
+  }
+}
+
+
+export const data = "Hello, here is some data143!"

@@ -16,19 +16,19 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var OuterProxy = function () {
-  function OuterProxy(_ref) {
+var Handler = function () {
+  function Handler(_ref) {
     var _ref$targets = _ref.targets,
         targets = _ref$targets === undefined ? [] : _ref$targets,
         newComponent = _ref.newComponent;
 
-    _classCallCheck(this, OuterProxy);
+    _classCallCheck(this, Handler);
 
     this.targets = targets;
     this.newComponent = newComponent;
   }
 
-  _createClass(OuterProxy, [{
+  _createClass(Handler, [{
     key: 'setNewComponent',
     value: function setNewComponent(newComponent) {
       this.newComponent = newComponent;
@@ -36,30 +36,18 @@ var OuterProxy = function () {
   }, {
     key: 'get',
     value: function get(target, key) {
-      if (this.targets.indexOf(target) === -1) {
-        this.targets.push(target);
+      console.log('get', target, key);
+      if (method === 'toString') {
+        return function () {
+          return target.default.toString();
+        };
+        // return obj.default.toString
       }
-
-      if (key === 'props') {
-        return target.props;
-      }
-
-      if (key === 'state') {
-        if (this.newComponent) {
-          return this.newComponent.state;
-        }
-        return target[key];
-      }
-
-      if (this.newComponent) {
-        return this.newComponent[key];
-      }
-
-      return target[key];
+      return target.default[method];
     }
   }]);
 
-  return OuterProxy;
+  return Handler;
 }();
 
 var InnerProxy = function () {
@@ -84,29 +72,32 @@ var InnerProxy = function () {
 }();
 
 var ReactProxy = function () {
-  function ReactProxy(Component, filename) {
+  function ReactProxy(Component, name, filename) {
     _classCallCheck(this, ReactProxy);
 
     this.Component = Component;
-    this.newComponent = undefined;
+    this.newComponent = Component;
 
     this.filename = filename;
     this.targets = [];
     this.watch;
+    this.name = name;
 
-    this.outerProxy = new OuterProxy({
-      targets: this.targets,
-      newComponent: this.newComponent
-    });
+    // this.outerProxy = new OuterProxy({
+    //   targets: this.targets,
+    //   newComponent: this.newComponent,
+    // })
 
-    this.innerProxy = new InnerProxy({
-      Component: this.Component,
-      outerProxy: this.outerProxy
-    });
+    // this.innerProxy = new InnerProxy({
+    //   Component: this.Component,
+    //   outerProxy: this.outerProxy
+    // })
 
     this.watchFile();
 
-    return new Proxy(this.Component, this.innerProxy);
+    return new Proxy(this.Component, {
+      get: this.get.bind(this)
+    });
   }
 
   _createClass(ReactProxy, [{
@@ -120,15 +111,29 @@ var ReactProxy = function () {
       this.watcher.on('change', this.fileDidChange.bind(this));
     }
   }, {
+    key: 'get',
+    value: function get(target, method) {
+      var _this = this;
+
+      if (method === 'toString') {
+        return function () {
+          return _this.newComponent.default.toString();
+        };
+        // return obj.default.toString
+      }
+      return this.newComponent.default[method];
+    }
+  }, {
     key: 'fileDidChange',
     value: function fileDidChange(path) {
       // Empty the current cache for this file.
       delete require.cache[path];
-      console.log('file did change: ', path);
+
       // Reload the file.
       var Component = require(path);
-      var name = this.Component.name;
-
+      // const name = this.Component.name
+      var name = this.name;
+      console.log('file did change');
       if (Component[name]) {
         Component = Component[name];
       } else if (Component.default.name == name) {
@@ -138,8 +143,8 @@ var ReactProxy = function () {
         return;
       }
 
-      var newComponent = new Component();
-      this.outerProxy.setNewComponent(newComponent);
+      // const newComponent = new Component();
+      this.newComponent = { default: Component };
 
       // Update all targets and make them rerender.
       this.forceUpdateAllTargets();
@@ -147,6 +152,7 @@ var ReactProxy = function () {
   }, {
     key: 'forceUpdateAllTargets',
     value: function forceUpdateAllTargets() {
+      console.log('targets', this.targets);
       this.targets.forEach(function (target) {
         target.forceUpdate();
       });

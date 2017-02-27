@@ -10,13 +10,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _button = require('./button');
+var _Button = require('./Button');
 
-var _button2 = _interopRequireDefault(_button);
-
-var _container = require('./container');
-
-var _container2 = _interopRequireDefault(_container);
+var _Button2 = _interopRequireDefault(_Button);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,39 +22,28 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_Component) {
-  _inherits(App, _Component);
+var Container = function (_Component) {
+  _inherits(Container, _Component);
 
-  function App() {
-    _classCallCheck(this, App);
+  function Container() {
+    _classCallCheck(this, Container);
 
-    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).apply(this, arguments));
   }
 
-  _createClass(App, [{
+  _createClass(Container, [{
     key: 'render',
     value: function render() {
-      console.log('render', _button.data);
       return _react2.default.createElement(
         'div',
-        { style: {
-            display: 'flex',
-            flex: 1,
-            backgroundColor: 'lightblue',
-            flexDirection: 'column'
-          } },
-        'Hello world!',
-        _react2.default.createElement(_button2.default, { badge: 34 }),
-        _react2.default.createElement(_button.SubButton, null),
-        _react2.default.createElement(_button2.default, null),
-        _react2.default.createElement(_container2.default, null),
-        'data:',
-        _button.data.toString()
+        { style: { backgroundColor: 'rgba(0,0,0,.2)' } },
+        'Container:',
+        _react2.default.createElement(_Button2.default, { badge: "Awesome" })
       );
     }
   }]);
 
-  return App;
+  return Container;
 }(_react.Component);
 
-exports.default = App;
+exports.default = Container;

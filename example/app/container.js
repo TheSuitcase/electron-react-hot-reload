@@ -8,9 +8,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _App = require('./_App.js');
+var _container = require('./_container.js');
 
-var im = _interopRequireWildcard(_App);
+var im = _interopRequireWildcard(_container);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -20,12 +20,12 @@ var im2 = _extends({}, im);
 var forExport = { __esModule: true };
 console.log('import', im);
 
-console.log('proxyFile: ', '_App.js');
+console.log('proxyFile: ', '_container.js');
 Object.keys(im).forEach(function (item) {
   if (Object.getPrototypeOf(im[item]).name === 'ReactComponent') {
-    im2[item] = new _dist.ReactProxy(im[item], __dirname + '/_App.js');
+    im2[item] = new _dist.ReactProxy(im[item], __dirname + '/_container.js');
   } else {
-    im2[item] = new _dist.DefaultProxy({ default: im[item] }, item, __dirname + '/_App.js');
+    im2[item] = new _dist.DefaultProxy({ default: im[item] }, item, __dirname + '/_container.js');
     // im2[item] = new Proxy({default: im[item]}, {
     //   get(obj, method, proxy){
     //     console.log('get', method)

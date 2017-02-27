@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.data = exports.SubButton = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -61,3 +62,28 @@ var Button = function (_Component) {
 }(_react.Component);
 
 exports.default = Button;
+
+var SubButton = exports.SubButton = function (_Component2) {
+  _inherits(SubButton, _Component2);
+
+  function SubButton() {
+    _classCallCheck(this, SubButton);
+
+    return _possibleConstructorReturn(this, (SubButton.__proto__ || Object.getPrototypeOf(SubButton)).apply(this, arguments));
+  }
+
+  _createClass(SubButton, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        ' SubButton 2 '
+      );
+    }
+  }]);
+
+  return SubButton;
+}(_react.Component);
+
+var data = exports.data = "Hello, here is some data143!";

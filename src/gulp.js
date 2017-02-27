@@ -8,9 +8,42 @@ import Vinyl from 'vinyl'
 
 const proxyFile = (filename) => {
   return [
-    `import { ReactProxy } from 'electron-react-hot-reload'`,
-    `import Component from './${filename}'`,
-    `export default new ReactProxy(Component, __dirname + '/${filename}')`,
+    // `import { ReactProxy } from 'electron-react-hot-reload'`,
+    `import { ReactProxy, DefaultProxy } from '${path.join(__dirname, '../dist')}'`,
+    `import React from 'react'`,
+    `import * as im from './${filename}'`,
+    `const im2 = {...im}`,
+    `const forExport = {__esModule: true}`,
+    `console.log('import', im)`,
+
+    `
+      console.log('proxyFile: ', '${filename}')
+      Object.keys(im).forEach((item) => {
+        if(Object.getPrototypeOf(im[item]).name === 'ReactComponent'){
+          im2[item] = new ReactProxy(im[item], __dirname + '/${filename}')
+        }else{
+          im2[item] = new DefaultProxy({default: im[item]}, item, __dirname + '/${filename}')
+          // im2[item] = new Proxy({default: im[item]}, {
+          //   get(obj, method, proxy){
+          //     console.log('get', method)
+          //     // return Reflect.get(obj.default, method);
+          //     if(method === 'toString'){
+          //       return () => {return obj.default.toString() }
+          //       // return obj.default.toString
+          //     }
+          //     return obj.default[method]
+          //   }
+
+          // })
+        }
+      })
+
+
+      console.log('exports', im2)
+      im2.__esModule = true;
+      module.exports = im2
+    `
+
   ].join('\n')
 }
 
@@ -49,7 +82,7 @@ export default function(){
     file.path = addUnderscoreToFileName(file.path)
     const orginialFilename = path.basename(file.path)
     const newFileName = replaceExtension(orginialFilename, 'js')
-
+console.log('newfilename', newFileName)
     this.push(new Vinyl({
       base: file.base,
       path: originalPath,

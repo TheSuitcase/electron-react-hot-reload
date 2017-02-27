@@ -1,6 +1,6 @@
 import chokidar from 'chokidar'
 
-class OuterProxy {
+class Handler {
   constructor({ targets = [], newComponent}){
     this.targets = targets
     this.newComponent = newComponent
@@ -9,26 +9,12 @@ class OuterProxy {
     this.newComponent = newComponent;
   }
   get(target, key){
-    if(this.targets.indexOf(target) === -1){
-      this.targets.push(target)
+    console.log('get', target, key)
+    if(method === 'toString'){
+      return () => {return target.default.toString() }
+      // return obj.default.toString
     }
-
-    if(key === 'props'){
-      return target.props;
-    }
-
-    if(key === 'state'){
-      if(this.newComponent){
-        return this.newComponent.state;
-      }
-      return target[key]
-    }
-
-    if(this.newComponent){
-      return this.newComponent[key]
-    }
-
-    return target[key]
+    return target.default[method]
   }
 }
 
@@ -47,27 +33,30 @@ class InnerProxy{
 
 
 class ReactProxy {
-  constructor(Component, filename){
+  constructor(Component, name, filename){
     this.Component = Component
-    this.newComponent = undefined;
+    this.newComponent = Component;
 
     this.filename = filename
     this.targets = [];
     this.watch;
+    this.name = name;
 
-    this.outerProxy = new OuterProxy({
-      targets: this.targets,
-      newComponent: this.newComponent,
-    })
+    // this.outerProxy = new OuterProxy({
+    //   targets: this.targets,
+    //   newComponent: this.newComponent,
+    // })
 
-    this.innerProxy = new InnerProxy({
-      Component: this.Component,
-      outerProxy: this.outerProxy
-    })
+    // this.innerProxy = new InnerProxy({
+    //   Component: this.Component,
+    //   outerProxy: this.outerProxy
+    // })
 
     this.watchFile()
 
-    return new Proxy(this.Component, this.innerProxy)
+    return new Proxy(this.Component, {
+      get: ::this.get,
+    })
   }
   watchFile(){
     this.watcher = chokidar.watch(
@@ -80,14 +69,22 @@ class ReactProxy {
 
     this.watcher.on('change', ::this.fileDidChange)
   }
+  get(target, method){
+     if(method === 'toString'){
+      return () => {return this.newComponent.default.toString() }
+      // return obj.default.toString
+    }
+    return this.newComponent.default[method]
+  }
   fileDidChange(path){
     // Empty the current cache for this file.
     delete require.cache[path]
-    console.log('file did change: ', path)
+
     // Reload the file.
     let Component = require(path)
-    const name = this.Component.name
-
+    // const name = this.Component.name
+    const name = this.name
+    console.log('file did change')
     if(Component[name]){
       Component = Component[name]
     }else if(Component.default.name == name){
@@ -97,13 +94,14 @@ class ReactProxy {
       return;
     }
 
-    const newComponent = new Component();
-    this.outerProxy.setNewComponent(newComponent)
+    // const newComponent = new Component();
+    this.newComponent = {default: Component}
 
     // Update all targets and make them rerender.
     this.forceUpdateAllTargets()
   }
   forceUpdateAllTargets(){
+    console.log('targets', this.targets)
     this.targets.forEach((target) => {
       target.forceUpdate()
     })

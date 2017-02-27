@@ -18,7 +18,7 @@ exports.default = function () {
     file.path = addUnderscoreToFileName(file.path);
     var orginialFilename = _path2.default.basename(file.path);
     var newFileName = replaceExtension(orginialFilename, 'js');
-
+    console.log('newfilename', newFileName);
     this.push(new _vinyl2.default({
       base: file.base,
       path: originalPath,
@@ -54,7 +54,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // component.js (proxy)
 
 var proxyFile = function proxyFile(filename) {
-  return ['import { ReactProxy } from \'electron-react-hot-reload\'', 'import Component from \'./' + filename + '\'', 'export default new ReactProxy(Component, __dirname + \'/' + filename + '\')'].join('\n');
+  return [
+  // `import { ReactProxy } from 'electron-react-hot-reload'`,
+  'import { ReactProxy, DefaultProxy } from \'' + _path2.default.join(__dirname, '../dist') + '\'', 'import React from \'react\'', 'import * as im from \'./' + filename + '\'', 'const im2 = {...im}', 'const forExport = {__esModule: true}', 'console.log(\'import\', im)', '\n      console.log(\'proxyFile: \', \'' + filename + '\')\n      Object.keys(im).forEach((item) => {\n        if(Object.getPrototypeOf(im[item]).name === \'ReactComponent\'){\n          im2[item] = new ReactProxy(im[item], __dirname + \'/' + filename + '\')\n        }else{\n          im2[item] = new DefaultProxy({default: im[item]}, item, __dirname + \'/' + filename + '\')\n          // im2[item] = new Proxy({default: im[item]}, {\n          //   get(obj, method, proxy){\n          //     console.log(\'get\', method)\n          //     // return Reflect.get(obj.default, method);\n          //     if(method === \'toString\'){\n          //       return () => {return obj.default.toString() }\n          //       // return obj.default.toString\n          //     }\n          //     return obj.default[method]\n          //   }\n\n          // })\n        }\n      })\n\n\n      console.log(\'exports\', im2)\n      im2.__esModule = true;\n      module.exports = im2\n    '].join('\n');
 };
 
 var isJsx = function isJsx(filePath) {
